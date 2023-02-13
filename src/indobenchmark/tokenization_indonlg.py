@@ -637,4 +637,4 @@ class IndoNLGTokenizer(PreTrainedTokenizer):
 		Returns:
 			`Tuple(str)`: Paths to the files saved.
 		"""
-		raise (save_directory, filename_prefix)
+		return (save_directory, filename_prefix)
