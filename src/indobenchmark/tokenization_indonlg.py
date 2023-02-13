@@ -313,7 +313,14 @@ class IndoNLGTokenizer(PreTrainedTokenizer):
 			else:
 				return self.added_tokens_decoder[ids]
 		tokens = []
+		
+		# import time
+
 		for index in ids:
+			# open("/home/zam/w1-{}".format(time.asctime()), "w").write(str(index))
+			if isinstance(index, list):
+				return self.convert_ids_to_tokens(index, skip_special_tokens)
+
 			index = int(index)
 			if skip_special_tokens and index in (self.all_special_ids + list(self.special_tokens_to_ids.values())):
 				continue
@@ -337,12 +344,15 @@ class IndoNLGTokenizer(PreTrainedTokenizer):
 		if index in self.special_ids_to_tokens:
 			return self.special_ids_to_tokens[index]
 		
-		token = self.sp_model.IdToPiece(index)
-		if '<0x' in token:
-			char_rep = chr(int(token[1:-1], 0))
-			if char_rep.isprintable():
-				return char_rep
-		return token
+		try:
+			token = self.sp_model.IdToPiece(index)
+			if '<0x' in token:
+				char_rep = chr(int(token[1:-1], 0))
+				if char_rep.isprintable():
+					return char_rep
+			return token
+		except Exception as e:
+			return "-"
 
 	def __getstate__(self):
 		state = self.__dict__.copy()
